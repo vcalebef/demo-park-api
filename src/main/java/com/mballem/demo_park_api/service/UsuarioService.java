@@ -1,8 +1,12 @@
 package com.mballem.demo_park_api.service;
 
 import com.mballem.demo_park_api.entity.Usuario;
+import com.mballem.demo_park_api.exception.EntityNotFoundException;
+import com.mballem.demo_park_api.exception.PasswordInvalidException;
+import com.mballem.demo_park_api.exception.UsernameUniqueViolationException;
 import com.mballem.demo_park_api.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +21,12 @@ public class UsuarioService {
     @Transactional
     public Usuario salvar(Usuario usuario) {
 
-        return usuarioRepository.save(usuario);
+        try {
+            return usuarioRepository.save(usuario);
+        }catch (DataIntegrityViolationException ex) {
+            throw new UsernameUniqueViolationException(String.format("Username {%s} ja cadastrado", usuario.getUsername()));
+        }
+
 
     }
 
@@ -25,7 +34,7 @@ public class UsuarioService {
     public Usuario buscarPoId(Long id) {
 
         return usuarioRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Usuario nao encontrado")
+                () -> new EntityNotFoundException(String.format("Usuario cujo id é {%s} nao encontrado", id))
         );
 
     }
@@ -34,12 +43,12 @@ public class UsuarioService {
     public Usuario editarSenha(Long id, String senhaAtual, String novaSenha, String confirmaSenha) {
 
         if (!novaSenha.equals(confirmaSenha)) {
-            throw new RuntimeException("Nova senha não confere com confirmação de senha.");
+            throw new PasswordInvalidException(String.format("Nova senha não confere com confirmação de senha"));
         }
 
         Usuario user = buscarPoId(id);
         if (!user.getPassword().equals(senhaAtual)) {
-            throw new RuntimeException("Sua senha não confere");
+            throw new PasswordInvalidException(String.format("Sua senha não confere"));
         }
 
         user.setPassword(novaSenha);
