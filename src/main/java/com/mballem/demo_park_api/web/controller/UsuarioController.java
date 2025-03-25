@@ -111,6 +111,8 @@ public class UsuarioController {
         Usuario user = usuarioService.editarSenha(id, dto.getSenhaAtual(), dto.getNovaSenha(), dto.getConfirmaSenha());
         return ResponseEntity.noContent().build();
     }
+    
+    
     @Operation(
             summary = "Recuperar usuario pelo id",
             description = "Recuperar usuario pelo id",
