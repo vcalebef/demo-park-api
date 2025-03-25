@@ -62,4 +62,11 @@ public class UsuarioService {
         return usuarioRepository.findAll();
 
     }
+
+    @Transactional(readOnly = true)
+    public Usuario findUserByUsername(String username) {
+
+        return usuarioRepository.findUserByUsername(username);
+
+    }
 }

@@ -133,4 +133,24 @@ public class UsuarioController {
 
     }
 
+    @Operation(
+            summary = "Recuperar usuario através do username",
+            description = "Recuperar usuario através do username",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Buscar usuario através do username",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = UsuarioResponseDto.class)))
+            }
+    )
+    @GetMapping("username/{username}")
+    public ResponseEntity<UsuarioResponseDto> getByUsername(@PathVariable String username) {
+
+        Usuario user = usuarioService.findUserByUsername(username);
+        return ResponseEntity.ok(UsuarioMapper.toUsuarioResponseDto(user));
+
+    }
+
 }
