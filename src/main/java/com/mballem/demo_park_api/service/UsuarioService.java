@@ -6,6 +6,7 @@ import com.mballem.demo_park_api.exception.PasswordInvalidException;
 import com.mballem.demo_park_api.exception.UsernameUniqueViolationException;
 import com.mballem.demo_park_api.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +17,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UsuarioService {
 
+    @Autowired
     private final UsuarioRepository usuarioRepository;
+
+    public UsuarioService() {
+        usuarioRepository = null;
+    }
 
     @Transactional
     public Usuario salvar(Usuario usuario) {
